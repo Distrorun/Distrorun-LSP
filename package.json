@@ -1,0 +1,53 @@
+{
+    "name": "distrorun-lsp",
+    "displayName": "DistroRun LSP",
+    "description": "Schema-powered autocompletion and validation for DistroRun YAML configuration files",
+    "version": "0.1.1",
+    "publisher": "distrorun",
+    "license": "MIT",
+    "icon": "logo.png",
+    "engines": {
+        "vscode": "^1.75.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Linters"
+    ],
+    "keywords": [
+        "yaml",
+        "distrorun",
+        "lsp",
+        "linux",
+        "os-builder"
+    ],
+    "activationEvents": [
+        "onLanguage:yaml"
+    ],
+    "main": "./out/extension.js",
+    "extensionDependencies": [
+        "redhat.vscode-yaml"
+    ],
+    "contributes": {
+        "yamlValidation": [
+            {
+                "fileMatch": [
+                    "*.yaml",
+                    "*.yml"
+                ],
+                "url": "./distrorun-schema.json"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "lint": "eslint src --ext ts"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.75.0",
+        "@types/node": "^18.0.0",
+        "typescript": "^5.5.0",
+        "@vscode/vsce": "^3.0.0"
+    }
+}
