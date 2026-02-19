@@ -1,0 +1,140 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "DistroRun Configuration",
+    "description": "Schema for DistroRun YAML configuration files. Defines the target OS, packages, users, services, and build options for a custom Linux image.",
+    "type": "object",
+    "required": [
+        "version",
+        "name",
+        "distro",
+        "users"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "The version of your configuration file. Follows semantic versioning (e.g., \"1\", \"1.0\", \"1.0.12\").",
+            "examples": [
+                "1",
+                "1.0",
+                "1.0.12"
+            ]
+        },
+        "name": {
+            "type": "string",
+            "description": "The name of your DistroRun configuration."
+        },
+        "distro": {
+            "type": "object",
+            "description": "Defines the target operating system and its architecture profile. DistroRun automatically injects the necessary base packages (kernel, bootloader, init system) based on this selection.",
+            "required": [
+                "base"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "base": {
+                    "type": "string",
+                    "description": "The target distribution.",
+                    "enum": [
+                        "fedora",
+                        "alpine"
+                    ]
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The system profile. Required for Fedora (server or workstation). Ignored for Alpine.",
+                    "enum": [
+                        "server",
+                        "workstation"
+                    ]
+                }
+            },
+            "if": {
+                "properties": {
+                    "base": {
+                        "const": "fedora"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "base",
+                    "type"
+                ]
+            }
+        },
+        "packages": {
+            "type": "array",
+            "description": "A list of software packages to install via the distribution's native package manager (dnf for Fedora, apk for Alpine). Do not include base system dependencies (like systemd or linux-kernel); the DistroRun engine handles these automatically.",
+            "items": {
+                "type": "string"
+            },
+            "examples": [
+                [
+                    "nginx",
+                    "vim",
+                    "curl"
+                ]
+            ]
+        },
+        "users": {
+            "type": "array",
+            "description": "Defines the system users. At least one user must be defined to ensure the system is accessible after booting.",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "password"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The UNIX username (e.g., root, charif).",
+                        "examples": [
+                            "root",
+                            "charif"
+                        ]
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "The plain-text password. DistroRun reads this and securely hashes it (e.g., via SHA-512) before injecting it into /etc/shadow. The plain text is never stored in the final OS image."
+                    }
+                }
+            }
+        },
+        "services": {
+            "type": "object",
+            "description": "Manages the runtime initialization of services. DistroRun translates these instructions into systemd symlinks for Fedora, or OpenRC runlevels for Alpine.",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "array",
+                    "description": "Services to start automatically at boot.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "examples": [
+                        [
+                            "nginx",
+                            "sshd"
+                        ]
+                    ]
+                }
+            }
+        },
+        "build": {
+            "type": "object",
+            "description": "Controls the behavior of the DistroRun Go engine during the artifact generation phase.",
+            "additionalProperties": false,
+            "properties": {
+                "sbom": {
+                    "type": "boolean",
+                    "description": "If true, the engine scans the final rootfs and generates a Software Bill of Materials (SPDX JSON). Set to false for faster, iterative development builds. Defaults to false if omitted.",
+                    "default": false
+                }
+            }
+        }
+    }
+}
