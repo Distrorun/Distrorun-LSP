@@ -29,7 +29,7 @@ The extension validates the following top-level keys in `.yaml` and `.yml` files
 | `packages` | `string[]` | No | Packages to install via the native package manager |
 | `users` | `object[]` | Yes | System users, each with a `name` and `password` |
 | `services` | `object` | No | Services to enable at boot |
-| `build` | `object` | No | Build options such as SBOM generation |
+| `build` | `object` | No | Build options: SBOM generation, output format (`iso`/`disk`/`img`), and disk sizing |
 
 ## Example
 
@@ -59,6 +59,8 @@ services:
 
 build:
   sbom: true
+  output: disk
+  disk_size: 8G
 ```
 
 ## Development

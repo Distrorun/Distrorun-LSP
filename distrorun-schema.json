@@ -133,6 +133,37 @@
                     "type": "boolean",
                     "description": "If true, the engine scans the final rootfs and generates a Software Bill of Materials (SPDX JSON). Set to false for faster, iterative development builds. Defaults to false if omitted.",
                     "default": false
+                },
+                "output": {
+                    "type": "string",
+                    "description": "Artifact format produced by the build. \"iso\" creates a bootable installer image (default). \"disk\" creates a qcow2 virtual disk for QEMU/libvirt. \"img\" creates a raw USB image with a persistence partition.",
+                    "enum": [
+                        "iso",
+                        "disk",
+                        "img"
+                    ],
+                    "default": "iso"
+                },
+                "disk_size": {
+                    "type": "string",
+                    "description": "Size of the virtual disk when output is \"disk\". Accepts suffixes like \"G\" or \"M\" (e.g., \"4G\", \"8G\", \"512M\"). Defaults to \"4G\". Ignored unless output is \"disk\".",
+                    "pattern": "^[0-9]+[KMGT]?$",
+                    "examples": [
+                        "4G",
+                        "8G",
+                        "16G"
+                    ],
+                    "default": "4G"
+                },
+                "persist_size": {
+                    "type": "string",
+                    "description": "Size of the persistence partition when output is \"img\". Accepts suffixes like \"G\" or \"M\" (e.g., \"2G\", \"512M\"). Defaults to \"2G\". Ignored unless output is \"img\".",
+                    "pattern": "^[0-9]+[KMGT]?$",
+                    "examples": [
+                        "2G",
+                        "4G"
+                    ],
+                    "default": "2G"
                 }
             }
         }

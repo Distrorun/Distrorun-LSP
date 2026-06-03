@@ -3,6 +3,16 @@
 All notable changes to the **DistroRun LSP** extension will be documented in this file.
 
 
+## [0.1.3] — 2026-05-20
+
+### Added
+
+- Schema support for the new `build.output` key with enum values `iso`, `disk`, and `img`
+- Schema support for `build.disk_size` (qcow2 virtual disk size when `output: disk`)
+- Schema support for `build.persist_size` (persistence partition size when `output: img`)
+- Pattern validation for size strings (e.g., `4G`, `512M`)
+
+
 ## [0.1.2] — 2026-02-19
 
 ### Changed
